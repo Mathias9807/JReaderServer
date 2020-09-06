@@ -9,7 +9,9 @@ const dictFilePath = './userDict.json';
 let uDict = {uDict: [], oDict: []};
 try {
   let file = fs.readFileSync(dictFilePath);
-  let uDict = JSON.parse(file);
+  console.log("Read dict file");
+  uDict = JSON.parse(file);
+  console.log("Parsed dict file");
 }catch (err) {
   console.log(`Failed to read file ${dictFilePath}. Initializing empty dict file. `);
 }
