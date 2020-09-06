@@ -1,0 +1,20 @@
+{
+  "name": "JReaderServer",
+  "version": "1.0.0",
+  "description": "Cloud sync server for JReader browser addon",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mathias9807/JReaderServer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mathias9807/JReaderServer/issues"
+  },
+  "homepage": "https://github.com/mathias9807/JReaderServer#readme"
+}
