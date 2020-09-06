@@ -24,24 +24,34 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify(uDict));
 
   }else if (req.method === 'POST') {
+    let rawData = '';
     req.on('data', (data) => {
-      let newDict = JSON.parse(data);
+      rawData += data;
+    });
+    req.on('end', () => {
+      try {
+        let newDict = JSON.parse(rawData);
 
-      console.log('Merging dicts');
-      let merge = (dict, nDict) => {
-        for (let w of nDict) {
-          if (dict.includes(w) === false) dict.push(w);
-        }
-      };
-      merge(uDict.uDict, newDict.uDict);
-      merge(uDict.oDict, newDict.oDict);
+        console.log('Merging dicts');
+        let merge = (dict, nDict) => {
+          for (let w of nDict) {
+            if (dict.includes(w) === false) dict.push(w);
+          }
+        };
+        merge(uDict.uDict, newDict.uDict);
+        merge(uDict.oDict, newDict.oDict);
 
-      console.log('Writing changes to file system');
-      let outData = JSON.stringify(uDict);
-      fs.writeFileSync(dictFilePath, outData);
-      console.log('\tDone');
+        console.log('Writing changes to file system');
+        let outData = JSON.stringify(uDict);
+        fs.writeFileSync(dictFilePath, outData);
+        console.log('\tDone');
 
-      res.end();
+        res.end();
+      }catch (err) {
+        console.log(err);
+        res.statusCode = 500;
+        res.end();
+      }
     });
   }
 });
