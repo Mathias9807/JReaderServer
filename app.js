@@ -8,11 +8,11 @@ const args = process.argv;
 const dictFilePath = typeof args[2] === 'string' ? args[2] : './userDict.json';
 console.log(`Using dict file ${dictFilePath}`);
 
-let uDict = {uDict: [], oDict: []};
+let dicts = {uDict: [], oDict: []};
 try {
   let file = fs.readFileSync(dictFilePath);
   console.log("Read dict file");
-  uDict = JSON.parse(file);
+  dicts = JSON.parse(file);
   console.log("Parsed dict file");
 }catch (err) {
   console.log(`Failed to read file ${dictFilePath}. Initializing empty dict file. `);
@@ -25,7 +25,7 @@ const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
     
   if (req.method === 'GET') {
-    res.end(JSON.stringify(uDict));
+    res.end(JSON.stringify(dicts));
 
   }else if (req.method === 'POST') {
     let rawData = '';
@@ -43,11 +43,14 @@ const server = http.createServer((req, res) => {
             if (dict.includes(w) === false) dict.push(w);
           }
         };
-        merge(uDict.uDict, newDict.uDict);
-        merge(uDict.oDict, newDict.oDict);
+        merge(dicts.uDict, newDict.uDict);
+        merge(dicts.oDict, newDict.oDict);
+
+        // Remove oDict words that are in uDict
+        dicts.oDict = dicts.oDict.filter(w => !dicts.uDict.includes(w));
 
         console.log('Writing changes to file system');
-        let outData = JSON.stringify(uDict);
+        let outData = JSON.stringify(dicts);
         fs.writeFileSync(dictFilePath, outData);
         console.log('\tDone');
 
@@ -58,6 +61,21 @@ const server = http.createServer((req, res) => {
         res.end();
       }
     });
+  }else if (req.method === 'DELETE') {
+    let rawData = '';
+    req.on('data', (data) => {
+      rawData += data;
+    });
+    req.on('end', () => {
+      let rDict = JSON.parse(rawData);
+
+      if (!Array.isArray(rDict.uDict)) rDict.uDict = [];
+      if (!Array.isArray(rDict.oDict)) rDict.oDict = [];
+
+      dicts.uDict = dicts.uDict.filter(w => !rDict.uDict.includes(w));
+      dicts.oDict = dicts.oDict.filter(w => !rDict.oDict.includes(w));
+    });
+    res.end();
   }
 });
 
