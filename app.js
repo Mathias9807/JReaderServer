@@ -36,6 +36,7 @@ const server = http.createServer((req, res) => {
 
         console.log('Merging dicts');
         let merge = (dict, nDict) => {
+          if (!Array.isArray(dict) || !Array.isArray(nDict)) return;
           for (let w of nDict) {
             if (dict.includes(w) === false) dict.push(w);
           }
