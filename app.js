@@ -19,7 +19,7 @@ try {
 const server = http.createServer((req, res) => {
   console.log(`${new Date().toString()}: ${req.method}`);
   res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/json');
+  res.setHeader('Content-Type', 'application/json');
   res.setHeader('Access-Control-Allow-Origin', '*');
     
   if (req.method === 'GET') {
