@@ -4,7 +4,9 @@ const fs = require('fs');
 const hostname = '127.0.0.1';
 const port = 3000;
 
-const dictFilePath = './userDict.json';
+const args = process.argv;
+const dictFilePath = typeof args[2] === 'string' ? args[2] : './userDict.json';
+console.log(`Using dict file ${dictFilePath}`);
 
 let uDict = {uDict: [], oDict: []};
 try {
