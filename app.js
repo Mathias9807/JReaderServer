@@ -23,6 +23,7 @@ const server = http.createServer((req, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', '*');
     
   if (req.method === 'GET') {
     res.end(JSON.stringify(dicts));
@@ -45,6 +46,10 @@ const server = http.createServer((req, res) => {
         };
         merge(dicts.uDict, newDict.uDict);
         merge(dicts.oDict, newDict.oDict);
+
+        // Clear new uDict words from old oDict and vice versa
+        dicts.uDict = dicts.uDict.filter(w => !newDict.oDict.includes(w));
+        dicts.oDict = dicts.oDict.filter(w => !newDict.uDict.includes(w));
 
         // Remove oDict words that are in uDict
         dicts.oDict = dicts.oDict.filter(w => !dicts.uDict.includes(w));
@@ -75,6 +80,8 @@ const server = http.createServer((req, res) => {
       dicts.uDict = dicts.uDict.filter(w => !rDict.uDict.includes(w));
       dicts.oDict = dicts.oDict.filter(w => !rDict.oDict.includes(w));
     });
+    res.end();
+  }else {
     res.end();
   }
 });
