@@ -34,6 +34,8 @@ const server = http.createServer((req, res) => {
       rawData += data;
     });
     req.on('end', () => {
+      console.log(`Body: ${rawData.length < 50 ? rawData : rawData.substring(0, 50)+'...'}`);
+
       try {
         let newDict = JSON.parse(rawData);
 
@@ -72,6 +74,8 @@ const server = http.createServer((req, res) => {
       rawData += data;
     });
     req.on('end', () => {
+      console.log(`Body: ${rawData.substring(0, 40)}`);
+
       let rDict = JSON.parse(rawData);
 
       if (!Array.isArray(rDict.uDict)) rDict.uDict = [];
